@@ -44,7 +44,6 @@ echo    📊 Built-in monitoring
 echo.
 echo ⚡ Local development still works:
 echo    npm run dev  (unchanged)
-echo    ngrok setup  (unchanged)
 echo.
 echo 🎉 Ready to deploy! Press any key to continue...
 pause

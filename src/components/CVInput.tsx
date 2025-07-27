@@ -1,23 +1,52 @@
+/**
+ * CVInput Component
+ * 
+ * A comprehensive CV input component that supports both PDF file uploads
+ * and direct text input. Features include:
+ * - Drag-and-drop PDF upload functionality
+ * - Automatic PDF text extraction via backend API
+ * - Real-time upload status feedback
+ * - Sample CV loading for testing
+ * - Character and word count display
+ * - Responsive design with error handling
+ * 
+ * @component
+ * @param {CVInputProps} props - Component props
+ * @param {string} props.value - Current CV text content
+ * @param {function} props.onChange - Callback function when CV content changes
+ */
+
 import React, { useRef, useState } from 'react';
 import { FileText, Upload, File, AlertCircle, CheckCircle } from 'lucide-react';
 
+/**
+ * Props interface for the CVInput component
+ */
 interface CVInputProps {
-  value: string;
-  onChange: (value: string) => void;
+  value: string;                    // Current CV text content
+  onChange: (value: string) => void; // Callback when content changes
 }
 
 const CVInput: React.FC<CVInputProps> = ({ value, onChange }) => {
+  // Refs and state for file upload functionality
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadStatus, setUploadStatus] = useState<'idle' | 'success' | 'error'>('idle');
   const [fileName, setFileName] = useState<string>('');
 
+  /**
+   * Extracts text from uploaded PDF file using backend API
+   * @param {File} file - The PDF file to extract text from
+   * @returns {Promise<string>} Extracted text content
+   * @throws {Error} If extraction fails or server error occurs
+   */
   const extractTextFromPDF = async (file: File): Promise<string> => {
     try {
       const formData = new FormData();
       formData.append('pdf', file);
       
-      // Use relative URL - Vite proxy will route to backend
+      // Use relative URL - Vite proxy will route to backend during development
+      // In production, this will call the same server serving the app
       const response = await fetch('/extract-text', {
         method: 'POST',
         body: formData,

@@ -1,3 +1,24 @@
+/**
+ * CV Tailoring Application - Main Component
+ * 
+ * This is the primary React component that orchestrates the entire CV tailoring workflow.
+ * It provides a step-by-step interface for users to:
+ * 1. Input their current CV (via upload or text paste)
+ * 2. Input the target job description
+ * 3. Process the CV using AI optimization
+ * 4. View and download the tailored results
+ * 
+ * Features:
+ * - Multi-step workflow with progress indicators
+ * - Real-time processing feedback
+ * - Professional PDF export
+ * - ATS score calculation
+ * - Location intelligence integration
+ * 
+ * @author CV Tailoring Team
+ * @version 1.0.0
+ */
+
 import { useState } from 'react';
 import { FileText, Zap, ArrowRight, CheckCircle } from 'lucide-react';
 import JobDescriptionInput from './components/JobDescriptionInput';
@@ -5,29 +26,37 @@ import CVInput from './components/CVInput';
 import ProcessingView from './components/ProcessingView';
 import ResultsView from './components/ResultsView';
 
+/**
+ * Interface defining the structure of job description data
+ * parsed from user input
+ */
 interface JobData {
-  title: string;
-  company: string;
-  requirements: string[];
-  skills: string[];
-  experience: string;
-  location: string;
+  title: string;           // Job position title
+  company: string;         // Company name
+  requirements: string[];  // List of job requirements
+  skills: string[];        // Required technical/soft skills
+  experience: string;      // Experience level required
+  location: string;        // Job location
 }
 
+/**
+ * Interface defining the structure of CV data
+ * parsed from user input or PDF extraction
+ */
 interface CVData {
-  name: string;
-  email: string;
-  phone: string;
-  location?: string;
-  country?: string;
-  experience: Array<{
+  name: string;           // Candidate's full name
+  email: string;          // Contact email
+  phone: string;          // Contact phone number
+  location?: string;      // Current location (optional)
+  country?: string;       // Detected country (optional)
+  experience: Array<{     // Work experience entries
     title: string;
     company: string;
     duration: string;
     description: string;
   }>;
-  skills: string[];
-  education: Array<{
+  skills: string[];       // List of candidate skills
+  education: Array<{      // Education background
     degree: string;
     institution: string;
     year: string;

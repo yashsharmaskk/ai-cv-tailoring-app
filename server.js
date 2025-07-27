@@ -1,3 +1,19 @@
+/**
+ * CV Tailoring Application - Express.js Server
+ * 
+ * This server provides AI-powered CV tailoring capabilities using Google Gemini AI.
+ * Features include:
+ * - PDF text extraction from uploaded CVs
+ * - AI-powered CV optimization based on job descriptions
+ * - ATS (Applicant Tracking System) scoring
+ * - Global location intelligence (300+ cities)
+ * - Multiple API key failover for reliability
+ * - Production-ready static file serving
+ * 
+ * @author CV Tailoring Team
+ * @version 1.0.0
+ */
+
 import express from 'express';
 import multer from 'multer';
 import cors from 'cors';
@@ -9,20 +25,38 @@ import dotenv from 'dotenv';
 import { detectCountryFromCity, formatLocationWithCountry } from './cityCountryDatabase.js';
 import path from 'path';
 
-// Load environment variables
+// Load environment variables from .env file
 dotenv.config();
 
+// ES module compatibility for __dirname and __filename
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-// Initialize Google Gemini with multiple API keys for failover
-const geminiApiKeys = [];
-let currentKeyIndex = 0;
+/**
+ * Google Gemini AI Configuration
+ * 
+ * This section handles multiple API key management for high availability.
+ * The system automatically fails over to backup keys if the primary key
+ * encounters rate limits or errors.
+ */
 
-// Load all available API keys from environment
-for (let i = 1; i <= 10; i++) { // Support up to 10 API keys
+// Array to store all available API keys
+const geminiApiKeys = [];
+let currentKeyIndex = 0; // Index of currently active API key
+
+/**
+ * Load API keys from environment variables
+ * Supports up to 10 API keys (GEMINI_API_KEY_1 through GEMINI_API_KEY_10)
+ * Filters out placeholder values and validates key length
+ */
+for (let i = 1; i <= 10; i++) {
   const key = process.env[`GEMINI_API_KEY_${i}`];
-  if (key && key !== 'your-second-api-key-here' && key !== 'your-third-api-key-here' && key !== 'your-fourth-api-key-here' && !key.includes('your-') && key.length > 20) {
+  if (key && 
+      key !== 'your-second-api-key-here' && 
+      key !== 'your-third-api-key-here' && 
+      key !== 'your-fourth-api-key-here' && 
+      !key.includes('your-') && 
+      key.length > 20) {
     geminiApiKeys.push(key);
   }
 }
@@ -166,17 +200,18 @@ initializeGemini();
 
 const app = express();
 
-// Enhanced CORS configuration for Render and ngrok support
+// Enhanced CORS configuration for production deployment
 app.use(cors({
   origin: [
     'http://localhost:3000',
     'http://localhost:3001', 
     'http://127.0.0.1:3000',
     'http://127.0.0.1:3001',
-    /^https:\/\/.*\.ngrok\.io$/,  // Allow all ngrok subdomains
-    /^https:\/\/.*\.ngrok-free\.app$/,  // Allow ngrok free app domains
     /^https:\/\/.*\.onrender\.com$/,  // Allow Render domains
-    /^https:\/\/.*\.render\.com$/   // Allow legacy Render domains
+    /^https:\/\/.*\.render\.com$/,    // Allow legacy Render domains
+    /^https:\/\/.*\.railway\.app$/,   // Allow Railway domains
+    /^https:\/\/.*\.vercel\.app$/,    // Allow Vercel domains
+    /^https:\/\/.*\.herokuapp\.com$/  // Allow Heroku domains
   ],
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],

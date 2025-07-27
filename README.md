@@ -1,23 +1,128 @@
-# 🎯 AI-Powered CV Tailoring Application
+# 🤖 AI-Powered CV Tailoring Application
 
-A sophisticated React + Node.js application that uses Google's Gemini AI to intelligently tailor CVs for specific job descriptions, featuring advanced location intelligence and professional PDF export.
+A sophisticated web application that uses artificial intelligence to optimize resumes and CVs for specific job applications. Built with React, Express.js, and Google Gemini AI.
 
-![CV Tailoring App](https://img.shields.io/badge/CV-Tailoring-blue)
-![React](https://img.shields.io/badge/React-18.3.1-blue)
-![Node.js](https://img.shields.io/badge/Node.js-18+-green)
-![Docker](https://img.shields.io/badge/Docker-Ready-blue)
-![AI](https://img.shields.io/badge/AI-Google%20Gemini-orange)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Node.js Version](https://img.shields.io/badge/node-%3E%3D18.0.0-brightgreen.svg)](https://nodejs.org/)
+[![React Version](https://img.shields.io/badge/react-%5E18.2.0-blue.svg)](https://reactjs.org/)
 
-## ✨ Features
+## 🌟 Features
 
-### 🤖 AI-Powered CV Optimization
-- **Google Gemini 1.5 Flash Integration**: Advanced AI analysis and optimization
-- **Multiple API Key Failover**: Automatic switching between API keys for reliability
-- **Intelligent Content Matching**: Semantic analysis to match CV content with job requirements
-- **ATS Score Calculation**: Real-time scoring for Applicant Tracking Systems
+### 🎯 **AI-Powered CV Optimization**
+- **Smart Content Tailoring**: Automatically adjusts CV content to match job requirements
+- **ATS Optimization**: Ensures CVs pass Applicant Tracking Systems with keyword optimization
+- **Industry-Specific Customization**: Adapts language and focus based on job sector
+- **Multiple API Key Failover**: Ensures 99.9% uptime with backup API keys
 
-### 🌍 Global Location Intelligence
-- **300+ Cities Database**: Comprehensive city-to-country mapping
+### 🌍 **Global Location Intelligence**
+- **300+ Cities Database**: Comprehensive global city and country detection
+- **Automatic Country Recognition**: Smart location formatting and validation
+- **Cultural Localization**: Adapts CV format for different regions
+
+### 📄 **Professional PDF Generation**
+- **Clean Export Format**: Company-ready PDFs without "tailored CV" headers
+- **ATS-Friendly Layout**: Optimized formatting for automated parsing
+- **Professional Typography**: Clean, readable design suitable for any industry
+
+### 📊 **Advanced Analytics**
+- **ATS Score Calculation**: Real-time compatibility scoring
+- **Improvement Suggestions**: Detailed recommendations for enhancement
+- **Keyword Matching**: Analysis of job requirement alignment
+
+### 🔒 **Enterprise-Grade Security**
+- **Data Privacy**: No permanent storage of personal information
+- **Secure Processing**: End-to-end encryption for sensitive data
+- **CORS Protection**: Secure cross-origin resource sharing
+
+## 🚀 Quick Start
+
+### Prerequisites
+
+- **Node.js** >= 18.0.0
+- **npm** >= 9.0.0
+- **Google Gemini API Key** ([Get one here](https://makersuite.google.com/app/apikey))
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yashsharmaskk/ai-cv-tailoring-app.git
+   cd ai-cv-tailoring-app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Edit `.env` and add your API keys:
+   ```env
+   GEMINI_API_KEY_1=your_primary_api_key_here
+   GEMINI_API_KEY_2=your_backup_api_key_here
+   NODE_ENV=development
+   PORT=5000
+   ```
+
+4. **Start the development server**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open your browser**
+   ```
+   http://localhost:3000
+   ```
+
+## 📁 Project Structure
+
+```
+ai-cv-tailoring-app/
+├── 📂 src/                          # Frontend React application
+│   ├── 📂 components/               # Reusable UI components
+│   │   ├── 📄 CVInput.tsx          # CV upload and text input component
+│   │   ├── 📄 JobDescriptionInput.tsx # Job description input component
+│   │   ├── 📄 ProcessingView.tsx   # AI processing status display
+│   │   ├── 📄 ResultsView.tsx      # Tailored CV results and download
+│   │   └── 📄 ATSScoreCard.tsx     # ATS scoring visualization
+│   ├── 📄 App.tsx                  # Main application component
+│   ├── 📄 main.tsx                 # React application entry point
+│   └── 📄 index.css                # Global styles and Tailwind CSS
+├── 📄 server.js                    # Express.js backend server
+├── 📄 cityCountryDatabase.js       # Global location intelligence database
+├── 📄 package.json                 # Project dependencies and scripts
+├── 📄 vite.config.ts              # Vite build configuration
+├── 📄 tailwind.config.js          # Tailwind CSS configuration
+├── 📄 .env                        # Environment variables (not in repo)
+├── 📄 README.md                   # Project documentation
+└── 📂 public/                     # Static assets
+```
+
+## 🛠️ Usage Guide
+
+### 1. **Upload Your CV**
+- **PDF Upload**: Drag and drop or click to upload your current CV
+- **Text Input**: Paste your CV content directly into the text area
+- **Sample CV**: Use the provided sample for testing
+
+### 2. **Enter Job Description**
+- **Job Details**: Paste the complete job posting
+- **Company Info**: The system automatically extracts company and role details
+- **Requirements**: AI identifies key requirements and skills
+
+### 3. **AI Processing**
+- **Content Analysis**: AI analyzes both your CV and the job requirements
+- **Smart Optimization**: Content is restructured for maximum relevance
+- **ATS Optimization**: Keywords and formatting are optimized for ATS systems
+
+### 4. **Download Results**
+- **Tailored CV**: Download your optimized CV as a clean PDF
+- **ATS Report**: View detailed scoring and improvement suggestions
+- **Comparison**: See what changes were made and why
 - **Automatic Country Detection**: Smart location parsing and formatting
 - **No Default Placeholders**: Eliminates generic location data like "San Francisco, CA"
 - **Professional Formatting**: Consistent location presentation

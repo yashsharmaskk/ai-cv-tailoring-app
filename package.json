@@ -2,21 +2,44 @@
   "name": "cv-tailoring-app",
   "private": true,
   "version": "1.0.0",
+  "description": "AI-powered CV tailoring application with global location intelligence and professional PDF export",
+  "main": "server.js",
   "type": "module",
+  "keywords": [
+    "cv",
+    "resume",
+    "ai",
+    "tailoring",
+    "ats",
+    "optimization",
+    "google-gemini",
+    "pdf",
+    "react",
+    "express"
+  ],
+  "author": "CV Tailoring Team",
+  "license": "MIT",
+  "homepage": "https://github.com/yashsharmaskk/ai-cv-tailoring-app#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yashsharmaskk/ai-cv-tailoring-app.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yashsharmaskk/ai-cv-tailoring-app/issues"
+  },
   "engines": {
-    "node": "18.x",
-    "npm": "9.x"
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
   },
   "scripts": {
     "dev": "concurrently \"npm run dev:vite\" \"npm run dev:server\"",
     "dev:vite": "vite",
     "dev:server": "node server.js",
-    "dev:ngrok": "node start-ngrok.js",
-    "ngrok": "npx ngrok http 5000",
     "build": "vite build",
     "start": "node server.js",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -43,7 +66,6 @@
     "eslint-plugin-react-hooks": "^5.1.0-rc.0",
     "eslint-plugin-react-refresh": "^0.4.11",
     "globals": "^15.9.0",
-    "ngrok": "^5.0.0-beta.2",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
