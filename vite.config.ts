@@ -27,6 +27,11 @@ export default defineConfig({
       '/health': {
         target: 'http://localhost:5000',
         changeOrigin: true
+      },
+      // Proxy AI tailoring endpoints to backend
+      '/ai': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
       }
     }
   },
