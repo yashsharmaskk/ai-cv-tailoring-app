@@ -454,13 +454,21 @@ Return ONLY a valid JSON object with this exact structure (no additional text or
     const response = await callGeminiWithFailover(prompt);
     let jsonText = response.text().trim();
     
-    // Clean up the response to ensure valid JSON
-    if (jsonText.startsWith('```json')) {
-      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    // Enhanced JSON cleaning to handle various AI response formats
+    // Remove markdown code blocks
+    jsonText = jsonText.replace(/^```json\s*/g, '').replace(/^```\s*/g, '');
+    jsonText = jsonText.replace(/\s*```$/g, '');
+    
+    // Remove any leading/trailing text that's not JSON
+    const jsonStart = jsonText.indexOf('{');
+    const jsonEnd = jsonText.lastIndexOf('}');
+    
+    if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+      jsonText = jsonText.substring(jsonStart, jsonEnd + 1);
     }
-    if (jsonText.startsWith('```')) {
-      jsonText = jsonText.replace(/```\n?/g, '');
-    }
+    
+    // Remove any trailing commas before closing brackets/braces
+    jsonText = jsonText.replace(/,(\s*[}\]])/g, '$1');
     
     console.log('Received CV parsing response from Gemini');
     console.log('Parsed JSON preview:', jsonText.substring(0, 200) + '...');
@@ -486,9 +494,29 @@ Return ONLY a valid JSON object with this exact structure (no additional text or
       }
       
     } catch (parseError) {
-      console.error('JSON parsing failed, using fallback:', parseError);
-      // Fallback parsing
-      parsedData = parseCV(cvText);
+      console.error('❌ JSON parsing failed:', parseError.message);
+      console.error('Raw response length:', jsonText.length);
+      console.error('Raw response preview:', jsonText.substring(0, 500) + '...');
+      console.error('JSON starts at:', jsonText.indexOf('{'));
+      console.error('JSON ends at:', jsonText.lastIndexOf('}'));
+      
+      // Try to fix common JSON issues
+      let fixedJson = jsonText;
+      
+      // Fix unescaped quotes in strings
+      fixedJson = fixedJson.replace(/([^\\])"/g, '$1\\"');
+      
+      // Try parsing the fixed version
+      try {
+        parsedData = JSON.parse(fixedJson);
+        console.log('✅ JSON fixed and parsed successfully');
+      } catch (secondError) {
+        console.error('❌ Second JSON parse attempt failed:', secondError.message);
+        console.log('🔧 Using fallback parser...');
+        
+        // Fallback parsing
+        parsedData = parseCV(cvText);
+      }
       
       // Apply location enhancement to fallback data too
       if (parsedData.location) {
@@ -873,13 +901,20 @@ Return ONLY this JSON structure:
     const response = await callGeminiWithFailover(prompt);
     let jsonText = response.text().trim();
     
-    // Clean up response
-    if (jsonText.startsWith('```json')) {
-      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    // Enhanced JSON cleaning to handle various AI response formats
+    jsonText = jsonText.replace(/^```json\s*/g, '').replace(/^```\s*/g, '');
+    jsonText = jsonText.replace(/\s*```$/g, '');
+    
+    // Extract JSON object from response
+    const jsonStart = jsonText.indexOf('{');
+    const jsonEnd = jsonText.lastIndexOf('}');
+    
+    if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+      jsonText = jsonText.substring(jsonStart, jsonEnd + 1);
     }
-    if (jsonText.startsWith('```')) {
-      jsonText = jsonText.replace(/```\n?/g, '');
-    }
+    
+    // Remove trailing commas
+    jsonText = jsonText.replace(/,(\s*[}\]])/g, '$1');
     
     const semanticAnalysis = JSON.parse(jsonText);
     console.log('AI Semantic Analysis:', semanticAnalysis.semanticScore, '%');
@@ -939,13 +974,20 @@ Return ONLY this JSON structure:
     const response = await callGeminiWithFailover(prompt);
     let jsonText = response.text().trim();
     
-    // Clean up response
-    if (jsonText.startsWith('```json')) {
-      jsonText = jsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+    // Enhanced JSON cleaning to handle various AI response formats
+    jsonText = jsonText.replace(/^```json\s*/g, '').replace(/^```\s*/g, '');
+    jsonText = jsonText.replace(/\s*```$/g, '');
+    
+    // Extract JSON object from response
+    const jsonStart = jsonText.indexOf('{');
+    const jsonEnd = jsonText.lastIndexOf('}');
+    
+    if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+      jsonText = jsonText.substring(jsonStart, jsonEnd + 1);
     }
-    if (jsonText.startsWith('```')) {
-      jsonText = jsonText.replace(/```\n?/g, '');
-    }
+    
+    // Remove trailing commas
+    jsonText = jsonText.replace(/,(\s*[}\]])/g, '$1');
     
     const contextAnalysis = JSON.parse(jsonText);
     console.log('AI Context Analysis:', contextAnalysis.contextScore, '%');
@@ -1272,12 +1314,20 @@ Return ONLY a valid JSON object with this structure:
       const parseResponse = await callGeminiWithFailover(parsePrompt);
       let parseJsonText = parseResponse.text().trim();
       
-      if (parseJsonText.startsWith('```json')) {
-        parseJsonText = parseJsonText.replace(/```json\n?/g, '').replace(/```\n?/g, '');
+      // Enhanced JSON cleaning to handle various AI response formats
+      parseJsonText = parseJsonText.replace(/^```json\s*/g, '').replace(/^```\s*/g, '');
+      parseJsonText = parseJsonText.replace(/\s*```$/g, '');
+      
+      // Extract JSON object from response
+      const jsonStart = parseJsonText.indexOf('{');
+      const jsonEnd = parseJsonText.lastIndexOf('}');
+      
+      if (jsonStart !== -1 && jsonEnd !== -1 && jsonEnd > jsonStart) {
+        parseJsonText = parseJsonText.substring(jsonStart, jsonEnd + 1);
       }
-      if (parseJsonText.startsWith('```')) {
-        parseJsonText = parseJsonText.replace(/```\n?/g, '');
-      }
+      
+      // Remove trailing commas
+      parseJsonText = parseJsonText.replace(/,(\s*[}\]])/g, '$1');
       
       cvData = JSON.parse(parseJsonText);
       
