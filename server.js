@@ -528,14 +528,18 @@ Return ONLY a valid JSON object with this exact structure (no additional text or
       }
     }
     
-    res.json({ cvData: parsedData });
+    res.status(200).json({ cvData: parsedData });
 
   } catch (error) {
     console.error('CV parsing error:', error.message);
     
     // Fallback to basic text parsing
     const fallbackData = parseCV(cvText);
-    res.json({ cvData: fallbackData });
+    res.status(200).json({ 
+      cvData: fallbackData,
+      warning: 'Used fallback parsing due to AI parsing error',
+      error: error.message 
+    });
   }
 });
 
@@ -1609,13 +1613,17 @@ CERTIFICATIONS & ACHIEVEMENTS`;
     
     // Validate JSON before sending
     try {
-      JSON.stringify(responseData);
-      res.json(responseData);
+      const jsonString = JSON.stringify(responseData);
+      if (!jsonString || jsonString === '{}') {
+        throw new Error('Empty response data');
+      }
+      res.status(200).json(responseData);
     } catch (jsonError) {
       console.error('JSON serialization error:', jsonError);
       res.status(500).json({
         error: 'Response serialization failed',
-        details: jsonError.message
+        details: jsonError.message,
+        fallback: 'Please try again or use manual keyword optimization'
       });
     }
 
@@ -1669,15 +1677,25 @@ CERTIFICATIONS & ACHIEVEMENTS`;
 
 const PORT = 5000;
 
-// Health check endpoint for Docker
-app.get('/health', (req, res) => {
-  res.status(200).json({ 
-    status: 'healthy', 
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    memory: process.memoryUsage(),
-    version: process.version
+// Error handling middleware for unhandled routes (before production static handler)
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    error: 'API endpoint not found',
+    path: req.path,
+    suggestion: 'Check the API documentation for valid endpoints'
   });
+});
+
+// Handle API-like routes that aren't found
+app.use(['/parse-cv', '/ai/*', '/extract-text', '/health', '/api-status'], (req, res, next) => {
+  if (req.method !== 'GET' && req.method !== 'POST') {
+    return res.status(405).json({
+      error: 'Method not allowed',
+      method: req.method,
+      path: req.path
+    });
+  }
+  next();
 });
 
 // In production, serve React app for all non-API routes (must be last)
@@ -1686,6 +1704,20 @@ if (process.env.NODE_ENV === 'production') {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
 }
+
+// Global error handler (should be after all routes)
+app.use((error, req, res, next) => {
+  console.error('Global error handler:', error);
+  
+  // Don't send error details in production
+  const isDevelopment = process.env.NODE_ENV !== 'production';
+  
+  res.status(500).json({
+    error: 'Internal server error',
+    message: isDevelopment ? error.message : 'Something went wrong',
+    timestamp: new Date().toISOString()
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`✅ CV Tailoring Server running on port ${PORT}`);
