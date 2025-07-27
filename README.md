@@ -383,6 +383,13 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 - **Issues**: Create GitHub issues for bugs and feature requests
 - **Discussions**: Use GitHub Discussions for questions
 
+## 👨‍💻 Author
+
+**Yash Sharma**
+- GitHub: [@yashsharmaskk](https://github.com/yashsharmaskk)
+- Original Repository: [ai-cv-tailoring-app](https://github.com/yashsharmaskk/ai-cv-tailoring-app)
+- Organization Repository: [injobguru/cv-tailor](https://github.com/injobguru/cv-tailor)
+
 ## 🏆 Acknowledgments
 
 - Google Gemini AI for powerful language processing

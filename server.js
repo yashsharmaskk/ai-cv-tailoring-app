@@ -10,8 +10,10 @@
  * - Multiple API key failover for reliability
  * - Production-ready static file serving
  * 
- * @author CV Tailoring Team
+ * @author Yash Sharma (yashsharmaskk) - CV Tailoring Team
  * @version 1.0.0
+ * @repository https://github.com/yashsharmaskk/ai-cv-tailoring-app (origin)
+ * @repository https://github.com/injobguru/cv-tailor (injobguru)
  */
 
 import express from 'express';
