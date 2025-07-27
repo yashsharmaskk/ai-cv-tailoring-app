@@ -12,10 +12,22 @@ export default defineConfig({
     strictPort: false, // Automatically find next available port if 3000 is taken
     proxy: {
       '/api': {
-        target: 'http://localhost:3001',
+        target: 'http://localhost:5000',
         changeOrigin: true,
-        secure: false,
+        rewrite: (path) => path.replace(/^\/api/, '')
       },
-    },
+      '/extract-text': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      },
+      '/parse-cv': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      },
+      '/health': {
+        target: 'http://localhost:5000',
+        changeOrigin: true
+      }
+    }
   },
 });

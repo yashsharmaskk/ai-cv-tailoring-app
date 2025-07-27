@@ -113,7 +113,7 @@ function App() {
     try {
       // First, parse the CV to extract structured data
       console.log('Parsing CV data...');
-      const cvParseResponse = await fetch('http://localhost:5000/parse-cv', {
+      const cvParseResponse = await fetch('/parse-cv', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -130,7 +130,7 @@ function App() {
       }
 
       // Call Google Gemini-powered AI tailoring endpoint
-      const response = await fetch('http://localhost:5000/ai/tailor-cv', {
+      const response = await fetch('/ai/tailor-cv', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

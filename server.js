@@ -7,6 +7,7 @@ import { dirname, join } from 'path';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
 import { detectCountryFromCity, formatLocationWithCountry } from './cityCountryDatabase.js';
+import path from 'path';
 
 // Load environment variables
 dotenv.config();
@@ -164,8 +165,35 @@ async function callGeminiWithFailover(prompt, maxRetries = geminiApiKeys.length)
 initializeGemini();
 
 const app = express();
-app.use(cors());
+
+// Enhanced CORS configuration for Render and ngrok support
+app.use(cors({
+  origin: [
+    'http://localhost:3000',
+    'http://localhost:3001', 
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    /^https:\/\/.*\.ngrok\.io$/,  // Allow all ngrok subdomains
+    /^https:\/\/.*\.ngrok-free\.app$/,  // Allow ngrok free app domains
+    /^https:\/\/.*\.onrender\.com$/,  // Allow Render domains
+    /^https:\/\/.*\.render\.com$/   // Allow legacy Render domains
+  ],
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
+}));
+
 app.use(express.json({ limit: '10mb' })); // Parse JSON bodies
+
+// Serve static files in production (Render deployment)
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirname, 'dist')));
+  
+  // Serve index.html for root route in production
+  app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  });
+}
 
 // Create uploads directory if it doesn't exist
 const uploadsDir = join(__dirname, 'uploads');
@@ -1549,8 +1577,17 @@ app.get('/health', (req, res) => {
   });
 });
 
+// In production, serve React app for all non-API routes (must be last)
+if (process.env.NODE_ENV === 'production') {
+  app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+  });
+}
+
 app.listen(PORT, () => {
-  console.log(`✅ PDF extraction server running at http://localhost:${PORT}`);
+  console.log(`✅ CV Tailoring Server running on port ${PORT}`);
+  console.log(`📊 Environment: ${process.env.NODE_ENV || 'development'}`);
+  console.log(`🔑 API Keys configured: ${geminiApiKeys.length}`);
 });
 
 process.on('uncaughtException', (error) => {

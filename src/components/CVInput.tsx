@@ -17,7 +17,8 @@ const CVInput: React.FC<CVInputProps> = ({ value, onChange }) => {
       const formData = new FormData();
       formData.append('pdf', file);
       
-      const response = await fetch('http://localhost:5000/extract-text', {
+      // Use relative URL - Vite proxy will route to backend
+      const response = await fetch('/extract-text', {
         method: 'POST',
         body: formData,
       });
