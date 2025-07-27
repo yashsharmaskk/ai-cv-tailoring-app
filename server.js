@@ -1329,6 +1329,11 @@ Return ONLY a valid JSON object with this structure:
       // Remove trailing commas
       parseJsonText = parseJsonText.replace(/,(\s*[}\]])/g, '$1');
       
+      // Validate JSON before parsing
+      if (!parseJsonText.trim() || parseJsonText.trim() === '{}') {
+        throw new Error('Empty or invalid JSON response from AI');
+      }
+      
       cvData = JSON.parse(parseJsonText);
       
       // Enhanced location processing
@@ -1501,7 +1506,7 @@ Create a resume so perfectly matched that it appears the candidate was designed 
     console.log('Job Description length:', jobDescription.length);
     
     const response = await callGeminiWithFailover(prompt);
-    const tailoredContent = (await response.text()).trim();
+    let tailoredContent = (await response.text()).trim();
 
     console.log('Received response from Gemini');
     console.log('Response length:', tailoredContent.length);
@@ -1601,7 +1606,18 @@ CERTIFICATIONS & ACHIEVEMENTS`;
     };
     
     console.log('Sending response data:', JSON.stringify(responseData, null, 2));
-    res.json(responseData);
+    
+    // Validate JSON before sending
+    try {
+      JSON.stringify(responseData);
+      res.json(responseData);
+    } catch (jsonError) {
+      console.error('JSON serialization error:', jsonError);
+      res.status(500).json({
+        error: 'Response serialization failed',
+        details: jsonError.message
+      });
+    }
 
   } catch (error) {
     console.error('Gemini API error with failover:', error.message);
