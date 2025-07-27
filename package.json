@@ -32,17 +32,16 @@
     "npm": ">=9.0.0"
   },
   "scripts": {
-    "dev": "concurrently \"npm run dev:vite\" \"npm run dev:server\"",
-    "dev:vite": "vite",
-    "dev:server": "node server.js",
+    "dev": "vite",
     "build": "vite build",
-    "start": "node server.js",
+    "start": "vite preview",
     "lint": "eslint .",
     "preview": "vite preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
+    "@vercel/node": "^5.3.7",
     "axios": "^1.11.0",
     "concurrently": "^8.2.2",
     "cors": "^2.8.5",
