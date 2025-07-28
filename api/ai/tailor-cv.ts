@@ -1,5 +1,5 @@
 import { VercelRequest, VercelResponse } from '@vercel/node';
-import { gemini } from '../lib/gemini';
+import { callGeminiWithFailover } from '../lib/gemini';
 
 // Serverless tailor-cv endpoint
 export default async function handler(req: VercelRequest, res: VercelResponse) {
@@ -28,10 +28,8 @@ Please return a tailored CV that:
 
 Return the response as plain text (not JSON) with professional formatting.`;
 
-    // Use correct Gemini model
-    const model = gemini.getGenerativeModel({ model: 'gemini-pro' });
-    const result = await model.generateContent(prompt);
-    const apiResponse = await result.response;
+    // Use multi-key failover Gemini call
+    const apiResponse = await callGeminiWithFailover(prompt, { model: 'gemini-pro' });
     const tailoredCV = apiResponse.text();
     
     // Return with analysis structure expected by frontend
