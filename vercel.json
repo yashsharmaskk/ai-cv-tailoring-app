@@ -9,6 +9,15 @@
     { "src": "/parse-cv", "dest": "/api/parse-cv.ts" },
     { "src": "/ai/tailor-cv", "dest": "/api/ai/tailor-cv.ts" },
     { "src": "/health", "dest": "/api/health.ts" },
+    { "src": "/api-status", "dest": "/api/api-status.ts" },
     { "src": "/(.*)", "dest": "/dist/$1" }
-  ]
+  ],
+  "functions": {
+    "api/**/*.ts": {
+      "maxDuration": 60
+    }
+  },
+  "env": {
+    "NODE_ENV": "production"
+  }
 }
